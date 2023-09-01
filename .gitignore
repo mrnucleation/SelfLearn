@@ -1,0 +1,9 @@
+*
+!.gitignore
+!*/
+!*.py
+!*.npy
+!*.ipynb
+!*.f90
+!*.f
+
