@@ -1,7 +1,8 @@
 from OptimizationTestFunctions import Sphere, Ackley, AckleyTest, Rosenbrock, Fletcher, Griewank, Penalty2, Quartic, Rastrigin, SchwefelDouble, SchwefelMax, SchwefelAbs, SchwefelSin, Stairs, Abs, Michalewicz, Scheffer, Eggholder, Weierstrass, plot_3d
-
-
+from DeadZone import DeadZone
+# ======================================================================================================================    
 class MCTS_MacroScore:
+    # ------------------------------------------------------------------------------------------------------------------
     def __init__(self):
         dim = 20
         self.triallist = [
@@ -28,9 +29,8 @@ class MCTS_MacroScore:
         objstack = [ DeadZone(model, nullscore=0.0, zonewidth=0.75) ]
         
         #Create the list of objects to be used in the objective function.
-        for dataset in datasets:
-            X_train, Y_train, atomcount = dataset
-            rmseobj = Symb_Fragment(X_train, Y_train, atomcount=atomcount, R_CUT_MAX=R_CUT_MAX, parentobj=None, pointtol=0.05, meantol=0.2, nullscore=1.5)
+        for func in self.triallist:
+            rmseobj = 
             objstack.append(rmseobj)
 
         #We now embed all the objects into a chain of heriacle objects.
@@ -47,3 +47,5 @@ class MCTS_MacroScore:
         self.dumpfilename = dumpfilename
         if self.dumpfilename is not None:
             self.dumpfile = open(self.dumpfilename, 'w')
+    # ------------------------------------------------------------------------------------------------------------------
+# ======================================================================================================================
