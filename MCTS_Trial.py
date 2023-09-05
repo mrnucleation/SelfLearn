@@ -22,11 +22,13 @@ def runtrial(testfunction, selectionrule):
             playouts=20, 
             selectfunction=selectionrule, 
             headexpansion=10)
+    tree.expand(nExpansions=1)
     tree.setconstant(5.37e2)
     starttime = time()
     for iLoop in range(1,50):
         print("Loop Number: %s"%(iLoop))
         tree.playexpand(nExpansions=1, depthlimit=depthlimit)
+        tree.autoscaleconstant(scaleboost=2.0)
         tree.simulate(nSimulations=1)
         curmin = tree.getbestscore()
         curtime = time()

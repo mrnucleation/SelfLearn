@@ -1,4 +1,5 @@
 from ObjectiveClass import HeriacleObjective
+from MCTS_Trial import runtrial
 from time import time
 import os
 import numpy as np
@@ -46,7 +47,7 @@ class Func_Fragment(HeriacleObjective):
         mctsrule = kwargs['mctsrule']
         
         
-        trialscore = 
+        trialscore = runtrial(self.function, mctsrule)
         
         # Calculate the RMSE of the data set
 
