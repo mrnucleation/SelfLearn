@@ -29,13 +29,13 @@ class DeadZone(HeriacleObjective):
 
 #        maskedweights, parmask = list(map(list, zip(*maskedweights)))
 
-        curweight = self.model.get_npweights()
+        curweight = self.model.get_weights()
         cnt = -1
         for i, row in enumerate(curweight):
             for j, x in np.ndenumerate(row):
                 cnt += 1
                 curweight[i][j] = maskedweights[cnt]
-        self.model.set_npweights(curweight)
+        self.model.set_weights(curweight)
         print("Starting Chain, Depth: %s"%(depth))
         score = 0.0
         score += self.getchildscores(parameters=parameters, model=self.model, depth=depth, **kwargs)
@@ -47,12 +47,7 @@ class DeadZone(HeriacleObjective):
         if not verbose or not self.dumpfilename is None:
             outstr = ' '.join([str(x) for x in maskedweights])
             self.dumpfile.write('%s | %s \n'%(outstr, numscore))
-        try:
-            print("Total Score: %s"%(score.numpy()))
-            return score.numpy()
-        except AttributeError:
-            print("Total Score: %s"%(score))
-            return score
+        return score
     
     # ---------------------------
     def deadzone(self, par):

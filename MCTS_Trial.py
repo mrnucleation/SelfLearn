@@ -26,18 +26,15 @@ class FunctionWrapper:
     
 
 #===============================================================================
-def runtrial(testfunction, selectionrule):
+def runtrial(testfunction, selectionrule, lbounds, ubounds):
 
     wrappedfunction = FunctionWrapper(testfunction)
     depthscale = [1.0, 0.7, 0.5, 0.3, 0.2, 0.1]
     depthlimit = len(depthscale)+5
-    ubounds = testfunction.ubounds
-    lbounds = testfunction.lbounds
     f_target = testfunction.f_best
     startset = np.random.uniform(lbounds, ubounds, size=ubounds.shape[0])
 
-    indata = UniformSearch(startset, lbounds, ubounds, depthscale=depthscale)
-    indata.setevaluator(wrappedfunction)
+    indata = UniformSearch(parameters=startset, lbounds=lbounds, ubounds=ubounds, depthscale=depthscale, lossfunction=wrappedfunction)
 
 
     #---Tree Main Run loop---
@@ -45,12 +42,13 @@ def runtrial(testfunction, selectionrule):
     tree = Tree(seeddata=indata, 
             playouts=20, 
             selectfunction=selectionrule, 
-            headexpansion=10)
+            headexpansion=10,
+            verbose=True)
     tree.expand(nExpansions=1)
     tree.setconstant(5.37e2)
     starttime = time()
-    for iLoop in range(1,50):
-        print("Loop Number: %s"%(iLoop))
+    for iLoop in range(1,500):
+        print("Sub Loop Number: %s, Current Best:%s"%(iLoop, wrappedfunction.bestscore))
         tree.playexpand(nExpansions=1, depthlimit=depthlimit)
         tree.autoscaleconstant(scaleboost=2.0)
         tree.simulate(nSimulations=1)

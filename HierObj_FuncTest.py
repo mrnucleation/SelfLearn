@@ -7,6 +7,14 @@ import tensorflow as tf
 
 import warnings
 
+
+#==============================================================================
+def var_name(var_dict, var_value):
+    for name, value in var_dict.items():
+        if value is var_value:
+            return name
+    return None
+
 #==============================================================================
 class Func_Fragment(HeriacleObjective):
     '''
@@ -16,12 +24,12 @@ class Func_Fragment(HeriacleObjective):
     to obtain a reasonable value for each and every chunk of data.
     '''
     #----------------------------------------------------------
-    def __init__(self, testfunc, xtol=1e-2, ftol=1e-2, parentobj=None,  nullscore=1.0, **kwargs):
+    def __init__(self, testfunc, dim, xtol=1e-2, ftol=1e-2, parentobj=None,  nullscore=1.0, **kwargs):
         # Initialize the parent class
         super(Func_Fragment, self).__init__(parentobj=parentobj, nullscore=nullscore)
         
         # The name of the objective function
-        self.name = 'Function_%s'%testfunc.__name__
+        self.name = 'Function_%s'%type(testfunc).__name__
         
         self.xtol = xtol
         self.ftol = ftol
@@ -30,17 +38,18 @@ class Func_Fragment(HeriacleObjective):
         if not callable(self.function):
             raise Exception('The function must be callable.')
         xmin, xmax, ymin, ymax = self.function.bounds
+        print("X Bounds: ", xmin, xmax)
+        print("Y Bounds: ", ymin, ymax)
         
         # The bounds of the objective function
-        self.lbounds = xmin
-        self.ubounds = xmax
+        self.lbounds = np.array(dim*[xmin])
+        self.ubounds = np.array(dim*[xmax])
         
         self.ymin = ymin
         self.ymax = ymax
         
         # The target score and position of the objective function
-        self.target_score = self.function.f_best
-        self.targetscore = (self.targetscore - self.ymin)/(self.ymax - self.ymin)
+        self.targetscore = self.function.f_best
         self.target_x = self.function.x_best
 
 
@@ -48,12 +57,12 @@ class Func_Fragment(HeriacleObjective):
     def __call__(self, parameters, depth=0, **kwargs):
         # Initialize the score
         score = 0.0
-        mctsrule = kwargs['mctsrule']
+        mctsrule = kwargs['model']
         
-        bestscore, best_x, n_evals = runtrial(self.function, mctsrule)
+        bestscore, best_x, n_evals = runtrial(self.function, mctsrule, self.lbounds, self.ubounds)
         
         x_error = np.linalg.norm(best_x - self.target_x)
-        bestscore = (bestscore - self.ymin)/(self.ymax - self.ymin)
+#        bestscore = (bestscore - self.ymin)/(self.ymax - self.ymin)
         f_score_error = np.abs( bestscore - self.target_score)
         score = f_score_error + 1e3*x_error
 

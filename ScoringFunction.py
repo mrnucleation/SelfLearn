@@ -1,13 +1,15 @@
 from OptimizationTestFunctions import Sphere, Ackley, AckleyTest, Rosenbrock, Fletcher, Griewank, Penalty2, Quartic, Rastrigin, SchwefelDouble, SchwefelMax, SchwefelAbs, SchwefelSin, Stairs, Abs, Michalewicz, Scheffer, Eggholder, Weierstrass, plot_3d
 from DeadZone import DeadZone
 from HierObj_FuncTest import Func_Fragment
+from ObjectiveClass import HeriacleObjective
 # ======================================================================================================================    
-class MCTS_MacroScore:
+class MCTS_MacroScore(HeriacleObjective):
     # ------------------------------------------------------------------------------------------------------------------
     def __init__(self, model, deadzone=0.25, dumpfilename="dump.dat", psuedodumpfilename='pseudo.dat'):
+        super(MCTS_MacroScore, self).__init__(nullscore=0.0)
         dim = 20
         self.triallist = [
-            Sphere(dim, degree = 2),
+#            Sphere(dim, degree = 2),
             Ackley(dim),
             AckleyTest(dim),
             Rosenbrock(dim),
@@ -31,7 +33,7 @@ class MCTS_MacroScore:
         
         #Create the list of objects to be used in the objective function.
         for func in self.triallist:
-            rmseobj = Func_Fragment(func, nullscore=100.0, xtol=1e-2, ftol=1e-2)
+            rmseobj = Func_Fragment(func, dim, nullscore=100.0, xtol=1e-2, ftol=1e-2)
             objstack.append(rmseobj)
 
         #We now embed all the objects into a chain of heriacle objects.
@@ -44,9 +46,15 @@ class MCTS_MacroScore:
         self.heracleobj = objstack[0]
         self.heracleobj.printinfo()
         
-        #Create a dump file to store the results of the optimization.
-        self.dumpfilename = dumpfilename
-        if self.dumpfilename is not None:
-            self.dumpfile = open(self.dumpfilename, 'w')
+            
+        self.bestscore = 1e500
+        
+    # ----------------------------------------------------------
+    def __call__(self, parameters, depth=0, **kwargs):
+        score = self.heracleobj(parameters, depth=depth, **kwargs)
+        if self.bestscore > score:
+            self.bestscore = score
+        print("Final Score: %s"%(score))
+        return score
     # ------------------------------------------------------------------------------------------------------------------
 # ======================================================================================================================
