@@ -14,7 +14,7 @@ class SelectionRule(object):
     def __init__(self, **kwargs) -> None:
         if 'useplayscores' in kwargs:
             if not isinstance(kwargs['useplayscores'], bool):
-                raise Exception('useplayscores must be a boolean value.'
+                raise Exception('useplayscores must be a boolean value.')
             self.useplayscores = kwargs['useplayscores']
         else:
             self.useplayscores = True
@@ -85,7 +85,7 @@ class SelectionRule(object):
         for node, score in zip(nodelist, explorescores):
             node.setexplorevalue(score)
         
-        uct_score = [expoitweight + exploreconstant*explorescore for exploitweight, explorescore in zip(reducedscores, explorescores)]]    
+        uct_score = [expoitweight + exploreconstant*explorescore for exploitweight, explorescore in zip(reducedscores, explorescores)]    
         selection_pos = np.argmax(uct_score)  
         selection = nodelist[selection_pos]
         

@@ -35,11 +35,13 @@ class Func_Fragment(HeriacleObjective):
         self.lbounds = xmin
         self.ubounds = xmax
         
+        self.ymin = ymin
+        self.ymax = ymax
+        
         # The target score and position of the objective function
         self.target_score = self.function.f_best
+        self.targetscore = (self.targetscore - self.ymin)/(self.ymax - self.ymin)
         self.target_x = self.function.x_best
-       
-       
 
 
     #----------------------------------------------------------
@@ -48,15 +50,12 @@ class Func_Fragment(HeriacleObjective):
         score = 0.0
         mctsrule = kwargs['mctsrule']
         
-        
         bestscore, best_x, n_evals = runtrial(self.function, mctsrule)
         
-        
         x_error = np.linalg.norm(best_x - self.target_x)
-        score_error = np.abs(bestscore - self.target_score)
-        
-        score = score_error + 1e3*x_error
-        
+        bestscore = (bestscore - self.ymin)/(self.ymax - self.ymin)
+        f_score_error = np.abs( bestscore - self.target_score)
+        score = f_score_error + 1e3*x_error
 
         if x_error < self.xtol: 
             score += self.getchildscores(parameters=parameters, depth=depth, **kwargs)

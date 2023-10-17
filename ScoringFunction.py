@@ -4,7 +4,7 @@ from HierObj_FuncTest import Func_Fragment
 # ======================================================================================================================    
 class MCTS_MacroScore:
     # ------------------------------------------------------------------------------------------------------------------
-    def __init__(self, model, dumpfilename='dumpfile.dat'):
+    def __init__(self, model, deadzone=0.25, dumpfilename="dump.dat", psuedodumpfilename='pseudo.dat'):
         dim = 20
         self.triallist = [
             Sphere(dim, degree = 2),
@@ -27,11 +27,11 @@ class MCTS_MacroScore:
             Eggholder(dim)
             ]
 
-        objstack = [ DeadZone(model, nullscore=0.0, zonewidth=0.75) ]
+        objstack = [ DeadZone(model, nullscore=0.0, zonewidth=deadzone, dumpfilename=dumpfilename, psudumpfilename=psuedodumpfilename) ]
         
         #Create the list of objects to be used in the objective function.
         for func in self.triallist:
-            rmseobj = Func_Fragment(func, nullscore=0.0, xtol=1e-2, ftol=1e-2)
+            rmseobj = Func_Fragment(func, nullscore=100.0, xtol=1e-2, ftol=1e-2)
             objstack.append(rmseobj)
 
         #We now embed all the objects into a chain of heriacle objects.
