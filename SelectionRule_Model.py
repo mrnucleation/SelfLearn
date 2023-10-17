@@ -1,6 +1,7 @@
 from math import exp, sqrt, log, fabs
 from random import random, choice, seed, shuffle
 import numpy as np
+from Model import getexploremodel
 # ========================================================
 def islower(a):
     if a < 0.0:
@@ -17,6 +18,8 @@ class SelectionRule(object):
             self.useplayscores = kwargs['useplayscores']
         else:
             self.useplayscores = True
+            
+        self.model = getexploremodel()
 
     # --------------------------------------------------------
     def __call__(self, nodelist, exploreconstant, verbose=False):

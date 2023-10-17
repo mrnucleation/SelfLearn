@@ -16,13 +16,15 @@ class Func_Fragment(HeriacleObjective):
     to obtain a reasonable value for each and every chunk of data.
     '''
     #----------------------------------------------------------
-    def __init__(self, testfunc, xtol=1e-2, parentobj=None,  nullscore=1.0, **kwargs):
+    def __init__(self, testfunc, xtol=1e-2, ftol=1e-2, parentobj=None,  nullscore=1.0, **kwargs):
         # Initialize the parent class
         super(Func_Fragment, self).__init__(parentobj=parentobj, nullscore=nullscore)
         
         # The name of the objective function
         self.name = 'Function_%s'%testfunc.__name__
         
+        self.xtol = xtol
+        self.ftol = ftol
         
         self.function = testfunc
         if not callable(self.function):
@@ -47,11 +49,16 @@ class Func_Fragment(HeriacleObjective):
         mctsrule = kwargs['mctsrule']
         
         
-        trialscore = runtrial(self.function, mctsrule)
+        bestscore, best_x, n_evals = runtrial(self.function, mctsrule)
         
-        # Calculate the RMSE of the data set
+        
+        x_error = np.linalg.norm(best_x - self.target_x)
+        score_error = np.abs(bestscore - self.target_score)
+        
+        score = score_error + 1e3*x_error
+        
 
-        if score < self.meantol: 
+        if x_error < self.xtol: 
             score += self.getchildscores(parameters=parameters, depth=depth, **kwargs)
         else:
             score -= self.nullscore

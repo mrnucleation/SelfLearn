@@ -1,9 +1,10 @@
 from OptimizationTestFunctions import Sphere, Ackley, AckleyTest, Rosenbrock, Fletcher, Griewank, Penalty2, Quartic, Rastrigin, SchwefelDouble, SchwefelMax, SchwefelAbs, SchwefelSin, Stairs, Abs, Michalewicz, Scheffer, Eggholder, Weierstrass, plot_3d
 from DeadZone import DeadZone
+from HierObj_FuncTest import Func_Fragment
 # ======================================================================================================================    
 class MCTS_MacroScore:
     # ------------------------------------------------------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, model, dumpfilename='dumpfile.dat'):
         dim = 20
         self.triallist = [
             Sphere(dim, degree = 2),
@@ -30,7 +31,7 @@ class MCTS_MacroScore:
         
         #Create the list of objects to be used in the objective function.
         for func in self.triallist:
-            rmseobj = 
+            rmseobj = Func_Fragment(func, nullscore=0.0, xtol=1e-2, ftol=1e-2)
             objstack.append(rmseobj)
 
         #We now embed all the objects into a chain of heriacle objects.

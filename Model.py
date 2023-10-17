@@ -1,5 +1,5 @@
-from tensorflow import keras
-
+#from tensorflow import keras
+import keras_core as keras
 
 def getexploremodel():
     model = keras.models.Sequential(

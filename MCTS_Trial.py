@@ -8,6 +8,7 @@ class FunctionWrapper:
     def __init__(self, function) -> None:
         self.function = function
         self.bestscore = None
+        self.best_x = None
         self.evalcount = 0
     # --------------------------------------------------------
     def __call__(self, parameters):
@@ -15,8 +16,11 @@ class FunctionWrapper:
         score = self.function(parameters)
         if self.bestscore is None:
             self.bestscore = score
+            self.best_x = parameters
         else:
-            self.bestscore = min(self.bestscore, score)
+            if score < self.bestscore:
+                self.bestscore = score
+                self.best_x = parameters
         return score
     # --------------------------------------------------------
     
@@ -57,5 +61,6 @@ def runtrial(testfunction, selectionrule):
         print("Search Duration: %s, Best Score:%s"%(curtime-starttime, curmin))
     bestscore = wrappedfunction.bestscore   
     evalcount = wrappedfunction.evalcount 
-    return bestscore, evalcount
+    bestx = wrappedfunction.best_x
+    return bestscore, best_x, evalcount
 #===============================================================================
