@@ -55,12 +55,12 @@ def runtrial(testfunction, selectionrule):
         tree.autoscaleconstant(scaleboost=2.0)
         tree.simulate(nSimulations=1)
         curmin = wrappedfunction.bestscore
-        if fabs(curmin - f_target) < 1e-4:
+        if fabs(curmin - f_target) < 1e-4 and np.linalg.norm(wrappedfunction.best_x - testfunction.x_best) < 1e-4:
             break
         curtime = time()
         print("Search Duration: %s, Best Score:%s"%(curtime-starttime, curmin))
     bestscore = wrappedfunction.bestscore   
     evalcount = wrappedfunction.evalcount 
-    bestx = wrappedfunction.best_x
+    best_x = wrappedfunction.best_x
     return bestscore, best_x, evalcount
 #===============================================================================
