@@ -19,7 +19,7 @@ class SelectionRule(object):
         else:
             self.useplayscores = True
             
-        self.model = getexploremodel()
+        self.model = kwargs['model']
 
     # --------------------------------------------------------
     def __call__(self, nodelist, exploreconstant, verbose=False):
@@ -85,7 +85,7 @@ class SelectionRule(object):
         for node, score in zip(nodelist, explorescores):
             node.setexplorevalue(score)
         
-        uct_score = [expoitweight + exploreconstant*explorescore for exploitweight, explorescore in zip(reducedscores, explorescores)]    
+        uct_score = [exploitweight + exploreconstant*explorescore for exploitweight, explorescore in zip(reducedscores, explorescores)]    
         selection_pos = np.argmax(uct_score)  
         selection = nodelist[selection_pos]
         

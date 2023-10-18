@@ -57,7 +57,7 @@ class Func_Fragment(HeriacleObjective):
     def __call__(self, parameters, depth=0, **kwargs):
         # Initialize the score
         score = 0.0
-        mctsrule = kwargs['model']
+        mctsrule = kwargs['mctsrule']
         
         bestscore, best_x, n_evals = runtrial(self.function, mctsrule, self.lbounds, self.ubounds)
         

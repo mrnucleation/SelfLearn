@@ -1,4 +1,5 @@
 from ObjectiveClass import HeriacleObjective
+from SelectionRule_Model import SelectionRule
 import numpy as np
 # ===================================
 class DeadZone(HeriacleObjective):
@@ -21,13 +22,8 @@ class DeadZone(HeriacleObjective):
     # ---------------------------
     def __call__(self, parameters, verbose=False, depth=0, **kwargs):
         
-#        print("Parameters: %s"%(parameters))
-
         maskedweights = np.array([self.deadzone(x) for x in parameters])
         
-#        print("Parameters: %s"%(maskedweights))
-
-#        maskedweights, parmask = list(map(list, zip(*maskedweights)))
 
         curweight = self.model.get_weights()
         cnt = -1
@@ -36,9 +32,11 @@ class DeadZone(HeriacleObjective):
                 cnt += 1
                 curweight[i][j] = maskedweights[cnt]
         self.model.set_weights(curweight)
+        
+        mctsrule = SelectionRule(model=self.model)
         print("Starting Chain, Depth: %s"%(depth))
         score = 0.0
-        score += self.getchildscores(parameters=parameters, model=self.model, depth=depth, **kwargs)
+        score += self.getchildscores(parameters=parameters, model=self.model, mctsrule=mctsrule,depth=depth, **kwargs)
         numscore = np.array(score)
         if not verbose or not self.psudumpfilename is None:
             outstr = ' '.join([str(x) for x in parameters])
