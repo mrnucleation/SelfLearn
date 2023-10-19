@@ -49,7 +49,7 @@ class Func_Fragment(HeriacleObjective):
         self.ymax = ymax
         
         # The target score and position of the objective function
-        self.targetscore = self.function.f_best
+        self.target_score = self.function.f_best
         self.target_x = self.function.x_best
 
 

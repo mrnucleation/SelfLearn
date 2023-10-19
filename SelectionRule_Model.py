@@ -48,6 +48,8 @@ class SelectionRule(object):
         for node in nodelist:
             score = node.getscore()
             usedlist = node.getusedlist()
+            _, playoutEList = node.getplayouts()
+            usedlist = node.getusedlist()
             exploitweight = score
             if self.useplayscores:
                 if len(playoutEList) > 0:
@@ -55,8 +57,8 @@ class SelectionRule(object):
                         if i not in usedlist:
                             exploitweight = min(exploitweight, score)
             scorelist.append(exploitweight)
-        maxscore = max(reducedscores)
-        minscore = min(reducedscores)
+        maxscore = max(scorelist)
+        minscore = min(scorelist)
         reducedscores = [ -(score-minscore)/(maxscore-minscore) for score in scorelist]
         reducedscores = np.array(reducedscores)
         
@@ -82,14 +84,15 @@ class SelectionRule(object):
         featurematrix = np.array(features)
         explorescores = self.model.predict(featurematrix)
         
-        for node, score in zip(nodelist, explorescores):
+        for node, exploitweight, explorescore in zip(nodelist, reducedscores, explorescores):
+            node.setexploitvalue(-exploitweight)
             node.setexplorevalue(score)
         
         uct_score = [exploitweight + exploreconstant*explorescore for exploitweight, explorescore in zip(reducedscores, explorescores)]    
         selection_pos = np.argmax(uct_score)  
         selection = nodelist[selection_pos]
         
-        print("Selecting Node %s with Score: %s"%(selection.getid(), uct_score[selection_pos]))
+        print("Selecting Node %s with Score: %s"%(selection.getid(), uct_score[selection_pos][0]))
         return selection
     # --------------------------------------------------------
 #========================================================
