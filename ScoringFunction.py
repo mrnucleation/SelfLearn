@@ -1,6 +1,7 @@
 from OptimizationTestFunctions import Sphere, Ackley, AckleyTest, Rosenbrock, Fletcher, Griewank, Penalty2, Quartic, Rastrigin, SchwefelDouble, SchwefelMax, SchwefelAbs, SchwefelSin, Stairs, Abs, Michalewicz, Scheffer, Eggholder, Weierstrass, plot_3d
 from DeadZone import DeadZone
 from HierObj_FuncTest import Func_Fragment
+from HierObj_ModelRange import ModelRange
 from ObjectiveClass import HeriacleObjective
 # ======================================================================================================================    
 class MCTS_MacroScore(HeriacleObjective):
@@ -29,11 +30,13 @@ class MCTS_MacroScore(HeriacleObjective):
             Eggholder(dim)
             ]
 
-        objstack = [ DeadZone(model, nullscore=0.0, zonewidth=deadzone, dumpfilename=dumpfilename, psudumpfilename=psuedodumpfilename) ]
+        objstack = [ DeadZone(model, nullscore=0.0, zonewidth=deadzone, dumpfilename=dumpfilename, psudumpfilename=psuedodumpfilename),
+                     ModelRange(model, spreadtol=0.2, nullscore=0.0)
+                     ]
         
         #Create the list of objects to be used in the objective function.
         for func in self.triallist:
-            rmseobj = Func_Fragment(func, dim, nullscore=100.0, xtol=1e-2, ftol=1e-2)
+            rmseobj = Func_Fragment(func, dim, nullscore=100.0, xtol=1e-1, ftol=1e-1)
             objstack.append(rmseobj)
 
         #We now embed all the objects into a chain of heriacle objects.

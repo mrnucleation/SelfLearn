@@ -79,7 +79,7 @@ class SelectionRule(object):
             tries = len(playdiff)
             success_rate = successes/tries
             
-            features.append([score, visits, parvisits, depth, success_rate, exploitweight])
+            features.append([score, -visits/800, -parvisits/800, -depth/30, success_rate])
            
         featurematrix = np.array(features)
         explorescores = self.model.predict(featurematrix)

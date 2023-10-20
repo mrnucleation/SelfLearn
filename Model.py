@@ -4,12 +4,12 @@ import keras_core as keras
 def getexploremodel():
     model = keras.models.Sequential(
         [
-            keras.Input(shape=(6,)),
-            keras.layers.Dense(32, activation='relu'),
-            keras.layers.Dense(64, activation='relu'),
-            keras.layers.Dense(64, activation='relu'),
-            keras.layers.Dense(32, activation='relu'),
-            keras.layers.Dense(1, activation='relu')
+            keras.Input(shape=(5,)),
+            keras.layers.Dense(7, activation='relu'),
+            keras.layers.Dense(7, activation='relu'),
+            keras.layers.Dense(7, activation='relu'),
+            keras.layers.Dense(6, activation='relu'),
+            keras.layers.Dense(1, activation='sigmoid')
         ]
     )
     model.compile(optimizer='adam', loss='mse', metrics=['mae'])

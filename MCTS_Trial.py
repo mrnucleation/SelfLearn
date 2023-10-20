@@ -49,7 +49,7 @@ def runtrial(testfunction, selectionrule, lbounds, ubounds):
     tree.expand(nExpansions=1)
     tree.setconstant(5.37e2)
     starttime = time()
-    for iLoop in range(1,50):
+    for iLoop in range(1,10):
         print("Sub Loop Number: %s, Current Best:%s, Target:%s"%(iLoop, wrappedfunction.bestscore, f_target))
         tree.playexpand(nExpansions=1, depthlimit=depthlimit)
         tree.simulate(nSimulations=1)
